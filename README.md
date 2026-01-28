@@ -24,7 +24,7 @@ A beautiful iOS app for item-level bill splitting, built with SwiftUI, SwiftData
 ### 1. Clone & Open
 
 ```bash
-git clone https://github.com/yourusername/Splitzy.git
+git clone https://github.com/DemirhanCelik/Splitzy.git
 cd Splitzy
 open Splitzy.xcodeproj
 ```
