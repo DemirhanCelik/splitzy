@@ -54,15 +54,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-functions.js";
 
-        // TODO: Replace with your config
+        // TODO: Replace with your Firebase config from Firebase Console
+        // Go to: Project Settings > Your Apps > Web App > Config
         const firebaseConfig = {
-            apiKey: "AIzaSyCphTEEBNtlgKZNNoGlEKAUigudK3Qwumk",
-            authDomain: "splitzy-demirhan.firebaseapp.com",
-            projectId: "splitzy-demirhan",
-            storageBucket: "splitzy-demirhan.firebasestorage.app",
-            messagingSenderId: "816113768602",
-            appId: "1:816113768602:web:03fa24e7f926a9f5e7a723",
-            measurementId: "G-NJPDX04X7W"
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
