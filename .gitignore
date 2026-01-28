@@ -1,0 +1,32 @@
+# Xcode
+*.xcuserstate
+*.xcuserdata/
+xcuserdata/
+
+# Build
+build/
+DerivedData/
+
+# Secrets - IMPORTANT: Keep your API keys safe!
+Secrets.plist
+GoogleService-Info.plist
+
+# Firebase
+.firebase/
+
+# CocoaPods
+Pods/
+
+# SPM
+.build/
+Package.resolved
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# IDE
+.idea/
+*.xcworkspace
+!*.xcodeproj/project.xcworkspace/

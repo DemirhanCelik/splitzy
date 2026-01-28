@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Bills
+    match /bills/{billId} {
+      // Allow read/write if owner
+      allow create: if request.auth != null;
+      allow read, write: if request.auth != null && (resource.data.ownerUserId == request.auth.uid || request.auth.uid in resource.data.participantUserIds);
+      
+      // Allow read if using a valid share token (handled via function usually, or specialized rule if public read allowed)
+      // Ideally, use a Cloud Function 'getBillSnapshot' for public access to avoid exposing full document.
+    }
+  }
+}

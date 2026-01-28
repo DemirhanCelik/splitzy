@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splitzy Bill Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f9f9f9;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+            border-top: 2px solid #333;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="card">
+        <h1>Loading Bill...</h1>
+    </div>
+
+    <script type="module">
+        // Import Firebase (Use CDN for simple HTML)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-functions.js";
+
+        // TODO: Replace with your config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCphTEEBNtlgKZNNoGlEKAUigudK3Qwumk",
+            authDomain: "splitzy-demirhan.firebaseapp.com",
+            projectId: "splitzy-demirhan",
+            storageBucket: "splitzy-demirhan.firebasestorage.app",
+            messagingSenderId: "816113768602",
+            appId: "1:816113768602:web:03fa24e7f926a9f5e7a723",
+            measurementId: "G-NJPDX04X7W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const functions = getFunctions(app);
+
+        async function loadBill() {
+            // Parse token from URL query ?token=XYZ or path
+            // Assuming /b/XYZ rewrite to index.html?token=XYZ or similar logic
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                document.getElementById('app').innerHTML = '<h1>Invalid Link</h1>';
+                return;
+            }
+
+            try {
+                const getSnapshot = httpsCallable(functions, 'getPublicBillSnapshot');
+                const result = await getSnapshot({ token: token });
+                renderBill(result.data);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('app').innerHTML = '<h1>Bill not found or link expired</h1>';
+            }
+        }
+
+        function renderBill(data) {
+            const formatMoney = (cents) => '$' + (cents / 100).toFixed(2);
+
+            let html = `<h1>${data.title || 'Bill'}</h1>`;
+            html += `<p>${new Date(data.createdAt).toLocaleDateString()}</p>`;
+
+            html += `<h3>Items</h3>`;
+            data.items.forEach(item => {
+                html += `<div class="item"><span>${item.name} x${item.quantity}</span><span>${formatMoney(item.unitPriceCents * item.quantity)}</span></div>`;
+            });
+
+            const subtotal = data.items.reduce((acc, i) => acc + (i.unitPriceCents * i.quantity), 0);
+            const total = subtotal + data.taxCents + data.tipCents;
+
+            html += `<div class="item"><span>Tax</span><span>${formatMoney(data.taxCents)}</span></div>`;
+            html += `<div class="item"><span>Tip</span><span>${formatMoney(data.tipCents)}</span></div>`;
+
+            html += `<div class="total"><span>Total</span><span>${formatMoney(total)}</span></div>`;
+
+            document.getElementById('app').innerHTML = html;
+        }
+
+        loadBill();
+    </script>
+</body>
+
+</html>
